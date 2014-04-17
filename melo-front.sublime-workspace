@@ -1,0 +1,392 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"prin",
+				"Printf	n int, err error ƒ"
+			],
+			[
+				"p",
+				"Printf	n int, err error ƒ"
+			],
+			[
+				"key",
+				"keyScorePair	struct ʈ"
+			],
+			[
+				"last",
+				"lastName	string ν"
+			],
+			[
+				"lastNa",
+				"lastNameResults	[]*bed.RangeResult ν"
+			],
+			[
+				"possib",
+				"possibleLastNameIds	map[int]float64 ν"
+			],
+			[
+				"poss",
+				"possibleMatches	map[int]float64 ν"
+			],
+			[
+				"possibl",
+				"possibleAddressIds	map[int]float64 ν"
+			],
+			[
+				"to",
+				"torontoLon	 ν"
+			],
+			[
+				"P",
+				"people	map[int]*Person ν"
+			],
+			[
+				"e",
+				"Errorf	 ƒ"
+			],
+			[
+				"Cal",
+				"CalculateApproximateDistance	float64 ƒ"
+			],
+			[
+				"sq",
+				"Sqrt	float64 ƒ"
+			],
+			[
+				"Person",
+				"PersonIndex	struct ʈ"
+			],
+			[
+				"coo",
+				"ExtractCoordinates	coordinates address.Coordinates, err error ƒ"
+			],
+			[
+				"print",
+				"Printf	n int, err error ƒ"
+			],
+			[
+				"address",
+				"addressSplit	[]string ν"
+			],
+			[
+				"add",
+				"addressSplit	[]string ν"
+			],
+			[
+				"pa",
+				"ParseFloat	f float64, err error ƒ"
+			],
+			[
+				"Pr",
+				"Printf	n int, err error ƒ"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "app.js",
+			"settings":
+			{
+				"buffer_size": 1167,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 107.0,
+		"selected_items":
+		[
+			[
+				"insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"go gmt;",
+			"go gmt",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/wr/pop/defense/models/data/logs/2014_04_10.log",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/bed/range-query.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/bed/tree.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/bed/tree_test.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/wmaddress/wmaddress_test.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/wmaddress/wmaddress.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/person-index.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/hello.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/neo4j-connector.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/bed/ed.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/kudo.csv",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/model.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/.idea/scopes/scope_settings.xml",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/person-index_test.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/Campaign_Contributions_Received_By_Hawaii_State_and_County_Candidates_From_November_8__2006_Through_December_31__2013.csv",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/Campaign_Contributions_Made_To_Candidates_By_Hawaii_Noncandidate_Committees_From_January_1__2008_Through_December_31__2013.csv",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/.idea/codeStyleSettings.xml",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/Contributions_Received_By_Hawaii_Noncandidate_Committees_From_January_1__2008_Through_December_31__2013.csv",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/Organizational_Reports_For_Hawaii_Noncandidate_Committees.csv",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/README.md",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/Organizational_Reports_For_Hawaii_State_and_County_Candidates.csv",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/Profiles_For_Hawaii_State_and_County_Candidates.csv",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/.idea/workspace.xml",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/address/address.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/address/address_test.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/.idea/modules.xml",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/.idea/melodispurences.iml",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/data/.gitignore",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/.gitignore",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/damerau/damerauLevenshtein_test.go",
+		"/Applications/Sublime Text.app/Contents/MacOS/address_test.go",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/2",
+		"/Users/wr/pop/go/src/github.com/megesdal/melodispurences/address_test.go",
+		"/Users/wr/Library/Application Support/Sublime Text 3/Packages/GoSublime/CHANGELOG.md",
+		"/Users/wr/.vimrc",
+		"/Users/wr/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "app.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1167,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								31,
+								31
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"vintage":
+							{
+								"action": null,
+								"action_count": "",
+								"capture_register": false,
+								"mode": "mode_normal",
+								"motion": null,
+								"motion_count": "",
+								"partial_sequence": "",
+								"register": "\"",
+								"sequence": "",
+								"xpos": 0
+							}
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"project": "melo-front.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"kudo",
+				"data/kudo.csv"
+			],
+			[
+				"kud",
+				"data/kudo.csv"
+			],
+			[
+				"wm",
+				"wmaddress/wmaddress_test.go"
+			],
+			[
+				"addretes",
+				"address/address_test.go"
+			],
+			[
+				"addres",
+				"address/address_test.go"
+			],
+			[
+				"tree_test",
+				"bed/tree_test.go"
+			],
+			[
+				"person-",
+				"data/person-index_test.go"
+			],
+			[
+				"per",
+				"data/person-index.go"
+			],
+			[
+				"hello",
+				"hello.go"
+			],
+			[
+				"model",
+				"data/model.go"
+			],
+			[
+				"range",
+				"bed/range-query.go"
+			],
+			[
+				"tree_te",
+				"bed/tree_test.go"
+			],
+			[
+				"",
+				"bed/ed.go"
+			],
+			[
+				".go",
+				"bed/tree.go"
+			],
+			[
+				"bed",
+				"bed/ed.go"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+		"vintage":
+		{
+		}
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 201.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

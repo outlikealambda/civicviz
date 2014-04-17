@@ -1,0 +1,109 @@
+.repeat-enter {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+  opacity:0;
+  height:0;
+  position:relative;
+}
+
+.repeat-enter.repeat-enter-active {
+  opacity:1;
+  height:25px;
+}
+
+.repeat-move {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+  color:black;
+  font-weight:bold;
+}
+
+.repeat-move.repeat-move-active {
+  color: red;
+  font-weight: bold;
+}
+
+.repeat-leave {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+  -webkit-transition:all linear 0.5s;
+  -moz-transition:all linear 0.5s;
+  -o-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+
+  opacity:1;
+}
+
+.repeat-leave.repeat-leave-active {
+  opacity:0;
+}
+
+.chat-room {
+  .scroll-me {
+    min-height:150px;
+    max-height:150px;
+    overflow-y:auto;
+  }
+  margin-bottom:20px;
+}
+
+.container {
+  margin-top:50px;
+}
+
+#queue {
+  ul {
+    margin-left:20px;
+
+    .title-artist-wrapper {
+      float:left;
+      width: 300px;
+      overflow-y: auto;
+    }
+
+    .title-artist {
+      margin-left:10px;
+    }
+
+    .song {
+      margin-bottom:10px;
+    }
+
+    .input-prepend {
+      margin-bottom: 0px;
+    }
+
+    input.btn {
+      margin-right:10px;
+    }
+  }
+}
+
+.song-value input {
+  width: 30px;
+}
+
+input.full-width {
+  width:100%;
+}
+
+#new-track {
+  margin-top:20px;
+  form {
+    margin-left:20px;
+  }
+}
+
+.inline-with-button {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

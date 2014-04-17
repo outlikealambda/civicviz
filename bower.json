@@ -1,0 +1,11 @@
+{
+  "name": "Defense",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "latest",
+    "angular-route": "latest",
+    "bootstrap": "3.0.3",
+    "d3": "latest",
+    "angular-socket-io": "0.x.x"
+  }
+}
