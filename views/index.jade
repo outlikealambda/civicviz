@@ -4,15 +4,18 @@ block body
 
   div(ng-controller='TestSocketCtrl') hello world!
     p {{ message }} {{ payloadSize }}
+    ul.list-unstyled
+      li(ng-repeat="record in records.data")
+        span {{ record[0].firstName }} {{ record[0].lastName }}
 
   script(src='components/angular/angular.js')
-  script(src='components/angular-cookies/angular-cookies.js')
   script(src='components/angular-route/angular-route.js')
   script(src='components/angular-socket-io/socket.js')
   script(src='http://localhost:3000/socket.io/socket.io.js')
-  link(src='components/bootstrap/dist/css/bootstrap.css')
+  script(src='js/wmd3.js')
   script(src='js/app.js')
   script(src='js/services.js')
   script(src='js/controllers.js')
   script(src='js/filters.js')
   script(src='js/directives.js')
+  link(src='components/bootstrap/dist/css/bootstrap.css')

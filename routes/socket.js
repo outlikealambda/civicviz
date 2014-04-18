@@ -1,6 +1,8 @@
 /*
  * Serve content over a socket
  */
+var db = require('../data/neo');
+
 var userNames = (function() {
   var names = {};
 
@@ -245,7 +247,7 @@ var goTest = function(socket) {
     var i,
     payload = [];
 
-    for ( i = 0; i < 1000; i++ ) {
+    for ( i = 0; i < 0; i++ ) {
       payload.push({
         name: "John Benjamin Freese " + i + "th",
         id: i,
@@ -261,14 +263,18 @@ var goTest = function(socket) {
   }
 
   socket.on('test:ping', function( data, cb ) {
-    var payload = generateFakePayload();
+    var onQueryCompletion;
 
     console.log('PINGY');
     console.log(data);
 
-    socket.emit('test:payload', payload, function() {
-      console.log('ACKNOWLEDGED');
-    });
+    onQueryCompletion = function onQueryCompletionFn( data ) {
+      socket.emit('test:payload', data, function() {
+        console.log('ACKNOWLEDGED');
+      });
+    };
+
+    db.DoSomething(onQueryCompletion);
   });
 };
 
@@ -281,6 +287,5 @@ module.exports = function(socket) {
   goChat(socket, user);
   goQueue(socket, user);
   goTest(socket);
-
 };
 

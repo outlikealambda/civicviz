@@ -3,7 +3,7 @@
 
 // Declare app level module which depends on filters, and services
 var app = angular.module('myApp', [
-	'btford.socket-io',
+	'wmd3',
 	'ngRoute',
 	'myApp.filters', 
 	'myApp.services', 
