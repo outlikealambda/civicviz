@@ -4,8 +4,9 @@ angular.module('wm.donut', ['wm.d3'])
     // constants
     MIN_HEIGHT = 500,
     MIN_WIDTH = 500,
-    RADIUS = 500,
+    // functions
     colorize,
+    getAllRaceDonations,
     sort;
 
   function sizeSvg() {
@@ -14,6 +15,7 @@ angular.module('wm.donut', ['wm.d3'])
       height: $window.innerHeight > MIN_HEIGHT ? $window.innerHeight : MIN_HEIGHT
     };
   }
+
 
   colorize = function() {
     var 
@@ -39,29 +41,33 @@ angular.module('wm.donut', ['wm.d3'])
     }
 
     nextColor = function() {
-      partyIndex = {};
+      partyIndex = {
+        democrat: 0,
+        republican: 0,
+        other: 0
+      };
 
       return function(party) {
         var color;
 
-        if (!partyIndex[party]) {
-          partyIndex[party] = 0;
-        }
-
         switch(party) {
           case "Democrat":
-            color = COLORS.blues[partyIndex.Democrat];
+            color = COLORS.blues[partyIndex.democrat];
+            partyIndex.democrat++;
+            partyIndex.democrat = partyIndex.democrat % 7;
             break;
           case "Republican":
-            color = COLORS.reds[partyIndex.Republican];
+            color = COLORS.reds[partyIndex.republican];
+            partyIndex.republican++;
+            partyIndex.republican = partyIndex.republican % 5;
             break;
           default: 
-            color = "#00FF00";
+            color = COLORS.greens[partyIndex.other];
+            partyIndex.other++;
+            partyIndex.other = partyIndex.other % 5;
             console.log("unknown party: ", party);
             break;
         }
-
-        partyIndex[party]++;
 
         return color;
       };
@@ -105,17 +111,28 @@ angular.module('wm.donut', ['wm.d3'])
 
   
   return {
+    templateUrl: 'partials/donut',
     link: function(scope, elem, attrs) {
       var
         arc,
         pie,
+        innerPie,
         svg,
         bbox,
-        g,
+        params,
         // 
         activeZoom,
         panZoom;
 
+      vizOptions = [
+        {
+          buttonText: "",
+          isActive: true,
+          go: function() {
+
+          }
+        }
+      ]
       activeZoom = {
         translate : [0, 0],
         scale : 1
@@ -132,49 +149,198 @@ angular.module('wm.donut', ['wm.d3'])
       };
 
       function init() {
-        var bounds = sizeSvg();
+        var bounds = sizeSvg(),
+          radius = Math.min(bounds.width, bounds.height) / 2 - 20;
 
         arc = d3.svg.arc()
-          .outerRadius(RADIUS - 10)
-          .innerRadius(RADIUS - 70);
+          .outerRadius(radius - 10)
+          .innerRadius(radius - 90);
+
+        innerArc = d3.svg.arc()
+          .outerRadius(radius - 110)
+          .innerRadius(radius - 200);
 
         pie = d3.layout.pie()
           .sort(sort.byCommittee)
           .value(function(d) { return d[3]; });
+
+        innerPie = d3.layout.pie()
+          .sort(null)
+          .value(function(d) { return d[2].amount; })
 
         zoom = d3.behavior.zoom().on( "zoom", panZoom );
 
         svg = d3.select(elem[0]).append("svg:svg")
           .attr("width", bounds.width)
           .attr("height", bounds.height)
-          .attr("viewBox", "0 0 " + bounds.width + " " + bounds.height)
+          .attr("viewBox", (-bounds.width/2) + " " + (-bounds.height/2) + " " + bounds.width + " " + bounds.height)
           .attr("preserveAspectRatio", "xMidYMid")
           .call( zoom );    
 
         bbox = svg.append("g");
       }
 
-      function populate(data) {
-        g = bbox.selectAll(".arc")
-          .data(pie(data))
-          .enter().append("g")
+      function populateOuterArc(data) {
+        var gArcs;
+
+        bbox.selectAll(".arc").data([]).exit().remove();
+
+        gArcs = bbox.selectAll(".arc")
+          .data(pie(data));
+
+        gArcs.enter()
+          .append("g")
           .attr("class", "arc")
           .on("mouseover", function(d) {
             scope.$apply(scope.details = getAllRaceDonations(d.data));
-          });
-
-        g.append("path")
+          })
+          .on("mouseleave", function() {
+            scope.$apply(scope.details = null);
+          })
+          .on("click", function(d) {
+            getIndividualDonations(d.data[0].personId);
+          })
+          .append("path") 
           .attr("d", arc)
           .style("fill", function(d) { 
             return colorize(d.data[1].party, d.data[1].regNo); 
           });
       }
 
-      Viz.load.allDonors.request();
-      Viz.load.allDonors.promise.then(function() {
-        init();
-        populate(Viz.records.data);
-      });
+      function getIndividualDonations(id) {
+        var params = {
+          personId: id
+        };
+
+        clearInnerArc();
+
+        Viz.load.donorDonations.request(params).then(function(results) {
+          populateInnerArc(results.data);
+        });
+
+        Viz.load.donorDonationsMeta.request(params).then(function(results) {
+          var i,
+            committee;
+
+          scope.donationMeta = results.data;
+          for ( i = 0; i < scope.donationMeta.length; i++ ) {
+            committee = scope.donationMeta[i][1];
+            committee.color = colorize(committee.party, committee.regNo);
+          }
+        });
+      }
+
+      function populateInnerArc(data) {
+        var gArcs;
+
+
+        gArcs = bbox.selectAll(".inner-arc")
+          .data(innerPie(data));
+
+        gArcs.enter()
+          .append("g")
+          .attr("class", "inner-arc")
+          // on something
+          .on("mouseover", function(d) {
+            scope.$apply(scope.donation = d.data);
+          })
+          .on("mouseleave", function() {
+            scope.$apply(scope.donation = null);
+          })
+          .append("path")
+          .attr("d", innerArc)
+          .style("fill", function(d) {
+            return colorize(d.data[1].party, d.data[1].regNo); 
+          });
+      }
+
+      function clearInnerArc() {
+        bbox.selectAll(".inner-arc").data([]).exit().remove();
+
+        scope.donationMeta = null;
+      }
+
+      // viz switching
+      scope.allDonors = {
+        isActive: false,
+        go: function() {
+          clearInnerArc();
+          console.log(params);
+          if (!scope.allDonors.isActive) {
+            Viz.load.allDonors.request(params).then(function() {
+              populateOuterArc(Viz.records.data);
+            });
+            Viz.load.allDonorsMeta.request(params).then(function(results) {
+              var i,
+                committee;
+
+              scope.meta = results;
+              for ( i = 0; i < scope.meta.data.length; i++ ) {
+                committee = scope.meta.data[i][0];
+                committee.color = colorize(committee.party, committee.regNo);
+              }
+            });
+            scope.allDonors.isActive = true;
+            scope.hedgers.isActive = false;
+          }
+        }
+      };
+
+      scope.hedgers = {
+        isActive: false,
+        go: function() {
+          clearInnerArc();
+          if (!scope.hedgers.isActive) {
+            Viz.load.hedgers.request(params).then(function() {
+              populateOuterArc(Viz.records.data);
+            });
+            Viz.load.hedgersMeta.request(params).then(function(results) {
+              var i,
+                committee;
+
+              scope.meta = results;
+              for ( i = 0; i < scope.meta.data.length; i++ ) {
+                committee = scope.meta.data[i][0];
+                committee.color = colorize(committee.party, committee.regNo);
+              }
+            });
+            scope.hedgers.isActive = true;
+            scope.allDonors.isActive = false;
+          }
+        }
+      };
+
+      scope.clearInnerArc = function() {
+        clearInnerArc();
+      };
+
+      scope[attrs.onSubmit] = function(title, county, district, period) {
+        params = {
+          title: title === "N/A" ? null : title,
+          county: county === "N/A" ? null : county,
+          district: district === "N/A" ? null : district,
+          period: period === "N/A" ? null : period
+        };
+
+        if (scope.allDonors.isActive) {
+          scope.allDonors.isActive = false;
+          scope.allDonors.go();
+        } else {
+          scope.hedgers.isActive = false;
+          scope.hedgers.go();
+        }
+      }
+
+      //finally, go
+      init();
+
+      params = {
+        title: "Mayor",
+        county: "Honolulu",
+        period: "2010-2012"
+      };
+
+      scope.allDonors.go();
     }
   };
 }]);

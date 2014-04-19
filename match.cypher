@@ -24,6 +24,14 @@ where
 with donor, c, count(d) as donations, sum(d.amount) as total order by donor.lastName
 return donor, c, donations, total
 
+// sum contributions by committee
+match
+  (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office)
+where 
+  o.title = "Governor" and d.in = "2008-2010" and r.in = d.in
+with c, count(distinct donor) as donors, count(d) as donations, sum(d.amount) as total
+return c, donors, donations, total
+
 /** 
 get all hedging donors 
 results: donor, committee, # of donations to that committee
@@ -63,6 +71,25 @@ where
   d.in = "2008-2010" and r.in = d.in and o.title = "Governor" 
 with donor, c, count(d) as donations, sum(d.amount) as total order by donor.personId
 return donor, c, donations, total 
+/**
+ * committee totals
+ *
+ */
+match
+  (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office)
+where 
+  o.title = "Governor" and d.in = "2008-2010" and r.in = d.in
+with donor, count(distinct c) as hedges
+order by hedges
+where
+    hedges > 1
+with donor
+match
+  (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office)
+where 
+  d.in = "2008-2010" and r.in = d.in and o.title = "Governor" 
+with c, count(distinct donor) as donors, count(d) as donations, sum(d.amount) as total order by total
+return c, donors, donations, total 
 
 /** 
 get all hedging donors 
@@ -107,3 +134,9 @@ where
 with donor, c, count(d) as donations
 order by donor.lastName
 return donor, c, donations 
+
+
+// get individual donations for a person, grouped by candidate
+match (donor:Person)-[d:`contributed to`]->(c:Committee) where donor.personId = 3683 with donor, c, sum(d.amount) as donation order by donation return donor, c, donation// get individual donations for a person, grouped by candidate
+
+match (donor:Person)-[d:`contributed to`]->(c:Committee) where donor.personId = 3683 return donor, c, d 

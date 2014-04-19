@@ -1,0 +1,27 @@
+div.donor-details.panel.panel-default(ng-show='details && !donation')
+  div.panel-heading
+    div {{ details[0][0].firstName }} {{ details[0][0].lastName }}
+  ul.list-group
+    li.list-group-item(ng-repeat='donation in details')
+      div {{ donation[1].name }}
+      div {{ donation[3] | currency }} in {{ donation[2] }} {{ donation[2] == 1 && "donation" || "donations" }}
+div.donation-details.panel.panel-default(ng-show="donation")
+  div.panel-heading {{ donation[0].firstName }} {{ donation[0].lastName }}
+  ul.list-group
+    li.list-group-item {{ donation[1].name }}
+    li.list-group-item {{ donation[2].amount | currency }}
+    li.list-group-item {{ donation[2].in }}
+div.donut-switch.btn-group
+   button.btn.btn-default(ng-class='{"active": allDonors.isActive }', ng-click='allDonors.go()') All Donors 
+   button.btn.btn-default(ng-class='{"active": hedgers.isActive }', ng-click='hedgers.go()') Cross-Donors
+div.race-summary.panel.panel-default(ng-show="meta.data && !donationMeta")
+  div.panel-heading Race Summary
+  ul.list-group
+    li.list-group-item(ng-repeat="committee in meta.data", ng-style='{ "border-bottom": "8px solid #" + committee[0].color }')
+      div {{ committee[0].name }} {{ committee[1] }} donors, {{ committee[2] }} donations, {{ committee[3] | currency }}
+div.donation-meta.panel.panel-default(ng-show="donationMeta")
+  div.panel-heading {{ donationMeta[0][0].firstName }} {{ donationMeta[0][0].lastName }} Donation Summary
+    button.close(type='button', ng-click='clearInnerArc()') &times;
+  ul.list-group
+    li.list-group-item(ng-repeat="committee in donationMeta", ng-style='{ "border-bottom": "8px solid #" + committee[1].color }')
+      div {{ committee[1].name }}, {{ committee[2] | currency }}

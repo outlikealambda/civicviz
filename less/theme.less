@@ -108,8 +108,51 @@ input.full-width {
   padding-bottom: 5px;
 }
 
-.donor-details {
+.donor-details, .donation-details {
   position:fixed;
   left: 20px;
+  top: 90px;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.donut-switch.btn-group {
+  position: fixed;
   top: 20px;
+  left: 20px;
+}
+
+.viz-params {
+  position: fixed;
+  bottom: 20px;
+  right: 50px;
+  width: 270px;
+  background: #efefef;
+
+  .form-horizontal .form-group {
+    margin-right:0;
+    margin-left: 0;
+    label {
+      text-align: right;
+    }
+    select {
+    }
+  }
+
+  .viz-select-list {
+    margin-top: 10px;
+  }
+}
+
+.viz-button {
+  float: right;
+  margin-right: 40px;
+}
+
+.race-summary, .donation-meta {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  max-height:400px;
+  overflow: auto;
 }

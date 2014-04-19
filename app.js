@@ -10,7 +10,6 @@ var express = require('express'),
 var app = module.exports = express();
 var server = require('http').createServer(app);
 
-
 // Hook Socket.io into Express
 var io = require('socket.io').listen(server);
 // var io = require('socket.io').listen(app);

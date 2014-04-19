@@ -1,20 +1,29 @@
 extends layout
 
 block body
-
-  div(ng-controller='TestSocketCtrl') 
-    div(donut-builder)
-      div.donor-details.panel.panel-default(ng-show='details')
-        div.panel-heading
-          div {{ details[0][0].firstName }} {{ details[0][0].lastName }}
-        ul.list-group
-          li.list-group-item(ng-repeat='donation in details')
-            div {{ donation[1].name }}
-            div ${{ donation[3] }} in {{ donation[2] }} {{ donation[2] == 1 && "donation" || "donations" }}
-
-
-
-
+  div(ng-controller='VizParamsCtrl')
+    div.viz-params.panel.panel-default
+      div.panel-heading Select a Race
+      ul.list-unstyled.form-horizontal.viz-select-list
+        li.form-group
+          label.col-sm-4.control-label Office 
+          div.col-sm-8
+            select.form-control(ng-model='title', ng-options='possibleTitle for possibleTitle in titles')
+        li.form-group
+          label.col-sm-4.control-label County 
+          div.col-sm-8
+            select.form-control(ng-model='county', ng-options='possibleCounty for possibleCounty in counties')
+        li.form-group
+          label.col-sm-4.control-label District
+          div.col-sm-8
+            select.form-control(ng-model='district', ng-options='possibleDistrict for possibleDistrict in districts')
+        li.form-group
+          label.col-sm-4.control-label Candidacy
+          div.col-sm-8
+            select.form-control(ng-model='period', ng-options='possiblePeriod for possiblePeriod in periods')
+        li.form-group
+          button.viz-button.btn.btn-default(type="button", ng-click='setParams(title, county, district, period)') Get Data
+    div(donut-builder, on-submit='setParams')
 
   script(src='components/d3/d3.js')
   script(src='components/angular/angular.js')

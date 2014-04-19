@@ -263,8 +263,28 @@ var createNeoSockets = function(socket) {
         console.log('ACKNOWLEDGED');
       });
     };
+    var params = {
+      title: "Governor",
+      period: "2010-2012"
+    };
 
-    db.GetAllDonors(onQueryCompletion);
+    db.GetAllDonors(data, onQueryCompletion);
+  });
+
+  socket.on('query:allDonorsMeta', function( data, cb ) {
+    var onQueryCompletion;
+
+    onQueryCompletion = function onQueryCompletionFn( data ) {
+      socket.emit('data:allDonorsMeta', data, function() {
+        console.log('ACKNOWLEDGED');
+      });
+    };
+    var params = {
+      title: "Governor",
+      period: "2010-2012"
+    };
+
+    db.GetAllDonorsMeta(data, onQueryCompletion);
   });
 
   socket.on('query:hedgers', function( data, cb ) {
@@ -276,7 +296,41 @@ var createNeoSockets = function(socket) {
       });
     };
 
-    db.GetHedgers(onQueryCompletion);
+    db.GetHedgers(data, onQueryCompletion);
+  });
+
+  socket.on('query:hedgersMeta', function( data, cb ) {
+    var onQueryCompletion;
+
+    onQueryCompletion = function onQueryCompletionFn( data ) {
+      socket.emit('data:hedgersMeta', data, function() {
+        console.log('ACKNOWLEDGED');
+      });
+    };
+
+    db.GetHedgersMeta(data, onQueryCompletion);
+  });
+  socket.on('query:donorDonations', function( data, cb ) {
+    var onQueryCompletion;
+
+    onQueryCompletion = function onQueryCompletionFn( data ) {
+      socket.emit('data:donorDonations', data, function() {
+        console.log('ACKNOWLEDGED');
+      });
+    };
+
+    db.GetDonorDonations(data, onQueryCompletion);
+  });
+  socket.on('query:donorDonationsMeta', function( data, cb ) {
+    var onQueryCompletion;
+
+    onQueryCompletion = function onQueryCompletionFn( data ) {
+      socket.emit('data:donorDonationsMeta', data, function() {
+        console.log('ACKNOWLEDGED');
+      });
+    };
+
+    db.GetDonorDonationsMeta(data, onQueryCompletion);
   });
 };
 

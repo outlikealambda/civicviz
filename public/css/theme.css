@@ -15,4 +15,9 @@
 input.full-width{width:100%;}
 #new-track{margin-top:20px;}#new-track form{margin-left:20px;}
 .inline-with-button{padding-top:5px;padding-bottom:5px;}
-.donor-details{position:fixed;left:20px;top:20px;}
+.donor-details,.donation-details{position:fixed;left:20px;top:90px;max-height:400px;overflow:auto;}
+.donut-switch.btn-group{position:fixed;top:20px;left:20px;}
+.viz-params{position:fixed;bottom:20px;right:50px;width:270px;background:#efefef;}.viz-params .form-horizontal .form-group{margin-right:0;margin-left:0;}.viz-params .form-horizontal .form-group label{text-align:right;}
+.viz-params .viz-select-list{margin-top:10px;}
+.viz-button{float:right;margin-right:40px;}
+.race-summary,.donation-meta{position:fixed;top:20px;right:20px;max-height:400px;overflow:auto;}
