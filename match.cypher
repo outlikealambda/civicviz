@@ -16,6 +16,13 @@ where
     con1.in = "2008-2010" and con1.in = con2.in and c1.name <> c2.name
 return distinct donor
 
+// get all donors for a race
+match
+  (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office)
+where 
+  o.title = "Governor" and d.in = "2008-2010" and r.in = d.in
+with donor, c, count(d) as donations, sum(d.amount) as total order by donor.lastName
+return donor, c, donations, total
 
 /** 
 get all hedging donors 
@@ -36,6 +43,26 @@ where
 	d.in = "2010-2012" and r.in = d.in and o.title = "Governor" 
 with donor, c, count(d) as donations order by donor.lastName
 return donor, c, donations 
+
+/**
+ * returns the total donation amount per committee
+ *
+ */
+match
+  (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office)
+where 
+  o.title = "Governor" and d.in = "2008-2010" and r.in = d.in
+with donor, count(distinct c) as hedges
+order by hedges
+where
+    hedges > 1
+with donor
+match
+  (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office)
+where 
+  d.in = "2008-2010" and r.in = d.in and o.title = "Governor" 
+with donor, c, count(d) as donations, sum(d.amount) as total order by donor.personId
+return donor, c, donations, total 
 
 /** 
 get all hedging donors 

@@ -4,10 +4,10 @@
 angular.module('myApp.controllers', [])
 .controller('TestSocketCtrl', function( $scope, Viz ) {
 
-  $scope.records = Viz.records;
+  // $scope.records = Viz.records;
 
-  console.log(Viz);
-  Viz.load.hedges();
+  // console.log(Viz);
+  // Viz.load.hedges();
 });
 
 // function AppCtrl($scope, socket, $timeout) {

@@ -3,7 +3,8 @@
 
 // Declare app level module which depends on filters, and services
 var app = angular.module('myApp', [
-	'wmd3',
+	'wm.d3',
+  'wm.donut',
 	'ngRoute',
 	'myApp.filters', 
 	'myApp.services', 

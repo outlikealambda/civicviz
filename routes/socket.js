@@ -242,50 +242,45 @@ var goChat = function (socket, user) {
   });
 };
 
-var goTest = function(socket) {
-  function generateFakePayload() {
-    var i,
-    payload = [];
-
-    for ( i = 0; i < 0; i++ ) {
-      payload.push({
-        name: "John Benjamin Freese " + i + "th",
-        id: i,
-        address: {
-          street: "1721 Kalanianaole Hwy",
-          city: "Honolulu",
-          state: "Hawaii"
-        }
-      });
-    }
-
-    return payload;
-  }
-
-  socket.on('test:ping', function( data, cb ) {
+var createNeoSockets = function(socket) {
+  socket.on('query:availableRaces', function( data, cb ) {
     var onQueryCompletion;
 
-    console.log('PINGY');
-    console.log(data);
-
     onQueryCompletion = function onQueryCompletionFn( data ) {
-      socket.emit('test:payload', data, function() {
+      socket.emit('data:availableRaces', data, function() {
         console.log('ACKNOWLEDGED');
       });
     };
 
-    db.DoSomething(onQueryCompletion);
+    db.GetAvailableRaces(onQueryCompletion);
+  });
+
+  socket.on('query:allDonors', function( data, cb ) {
+    var onQueryCompletion;
+
+    onQueryCompletion = function onQueryCompletionFn( data ) {
+      socket.emit('data:allDonors', data, function() {
+        console.log('ACKNOWLEDGED');
+      });
+    };
+
+    db.GetAllDonors(onQueryCompletion);
+  });
+
+  socket.on('query:hedgers', function( data, cb ) {
+    var onQueryCompletion;
+
+    onQueryCompletion = function onQueryCompletionFn( data ) {
+      socket.emit('data:hedgers', data, function() {
+        console.log('ACKNOWLEDGED');
+      });
+    };
+
+    db.GetHedgers(onQueryCompletion);
   });
 };
 
 module.exports = function(socket) {
-  // init songQueue
-  // init userNames
-
-  var user = {};
-
-  goChat(socket, user);
-  goQueue(socket, user);
-  goTest(socket);
+  createNeoSockets(socket);
 };
 
