@@ -20,7 +20,7 @@ div.race-summary.panel.panel-default(ng-show="meta.data && !donationMeta")
     li.list-group-item(ng-repeat="committee in meta.data", ng-style='{ "border-bottom": "8px solid #" + committee[0].color }')
       div {{ committee[0].name }} {{ committee[1] }} donors, {{ committee[2] }} donations, {{ committee[3] | currency }}
 div.donation-meta.panel.panel-default(ng-show="donationMeta")
-  div.panel-heading {{ donationMeta[0][0].firstName }} {{ donationMeta[0][0].lastName }} Donation Summary
+  div.panel-heading {{ donationMeta[0][0].firstName }} {{ donationMeta[0][0].lastName }} - {{ donationTotal | currency }}
     button.close(type='button', ng-click='clearInnerArc()') &times;
   ul.list-group
     li.list-group-item(ng-repeat="committee in donationMeta", ng-style='{ "border-bottom": "8px solid #" + committee[1].color }')

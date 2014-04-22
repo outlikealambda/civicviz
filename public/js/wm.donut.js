@@ -183,13 +183,13 @@ angular.module('wm.donut', ['wm.d3'])
       function populateOuterArc(data) {
         var gArcs;
 
-        bbox.selectAll(".arc").data([]).exit().remove();
+        // bbox.selectAll(".arc").data([]).exit().remove();
 
         gArcs = bbox.selectAll(".arc")
           .data(pie(data));
 
         gArcs.enter()
-          .append("g")
+          .append("path")
           .attr("class", "arc")
           .on("mouseover", function(d) {
             scope.$apply(scope.details = getAllRaceDonations(d.data));
@@ -199,12 +199,16 @@ angular.module('wm.donut', ['wm.d3'])
           })
           .on("click", function(d) {
             getIndividualDonations(d.data[0].personId);
-          })
-          .append("path") 
-          .attr("d", arc)
+          });
+
+        gArcs
           .style("fill", function(d) { 
             return colorize(d.data[1].party, d.data[1].regNo); 
-          });
+          })
+          .transition().duration(1000)
+          .attr("d", arc);
+
+        gArcs.exit().remove();
       }
 
       function getIndividualDonations(id) {
@@ -220,13 +224,17 @@ angular.module('wm.donut', ['wm.d3'])
 
         Viz.load.donorDonationsMeta.request(params).then(function(results) {
           var i,
+            donationTotal = 0,
             committee;
 
           scope.donationMeta = results.data;
           for ( i = 0; i < scope.donationMeta.length; i++ ) {
             committee = scope.donationMeta[i][1];
             committee.color = colorize(committee.party, committee.regNo);
+            donationTotal += scope.donationMeta[i][2];
           }
+
+          scope.donationTotal = donationTotal;
         });
       }
 
@@ -238,7 +246,7 @@ angular.module('wm.donut', ['wm.d3'])
           .data(innerPie(data));
 
         gArcs.enter()
-          .append("g")
+          .append("path")
           .attr("class", "inner-arc")
           // on something
           .on("mouseover", function(d) {
@@ -246,18 +254,20 @@ angular.module('wm.donut', ['wm.d3'])
           })
           .on("mouseleave", function() {
             scope.$apply(scope.donation = null);
-          })
-          .append("path")
-          .attr("d", innerArc)
-          .style("fill", function(d) {
-            return colorize(d.data[1].party, d.data[1].regNo); 
           });
+
+        gArcs.style("fill", function(d) {
+            return colorize(d.data[1].party, d.data[1].regNo); 
+          })
+          .transition().duration(1000)
+          .attr("d", innerArc)
       }
 
       function clearInnerArc() {
         bbox.selectAll(".inner-arc").data([]).exit().remove();
 
         scope.donationMeta = null;
+        scope.donationTotal = null;
       }
 
       // viz switching

@@ -1,3 +1,5 @@
 node_modules/
 public/components/
 .idea/
+*.sublime-project
+*.sublime-workspace
