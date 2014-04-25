@@ -21,3 +21,4 @@ input.full-width{width:100%;}
 .viz-params .viz-select-list{margin-top:10px;}
 .viz-button{float:right;margin-right:40px;}
 .race-summary,.donation-meta{position:fixed;top:20px;right:20px;max-height:400px;overflow:auto;}
+path.arc:hover{stroke:#fff;stroke-width:2px;}

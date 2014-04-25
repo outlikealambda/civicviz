@@ -12,7 +12,7 @@ function queryDb(queryString, params, cb) {
   db.cypherQuery(queryString, params, function(err, result) {
     cb(result);
   });
-};
+}
 
 queries.getHedgers = function(params) {
   var q = 'match (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office) where o.title = { title }';
@@ -67,7 +67,7 @@ queries.getHedgersMeta = function(params) {
 };
 
 queries.getAllDonors = function(params) {
-  var q = 'match (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office) where o.title = { title }'
+  var q = 'match (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office) where o.title = { title }';
   if (params.county) {
     q += ' and o.county = { county }';
   }
@@ -83,7 +83,7 @@ queries.getAllDonors = function(params) {
 };
 
 queries.getAllDonorsMeta = function(params) {
-  var q = 'match (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office) where o.title = { title }'
+  var q = 'match (donor)-[d:`contributed to`]->(c:Committee)-[r:`ran for`]->(o:Office) where o.title = { title }';
   if (params.county) {
     q += ' and o.county = { county }';
   }
@@ -100,14 +100,27 @@ queries.getAllDonorsMeta = function(params) {
 
 queries.getAvailableRaces = function() {
   return 'match (o:Office)-[r:`ran for`]-(c) with distinct r.in as period, o return o, period';
-}
+};
 
 queries.getDonorDonations = function() {
   return 'match (donor:Person)-[d:`contributed to`]->(c:Committee) where donor.personId = { personId } with donor, c, d order by c.regNo return donor, c, d';
-}
+};
 queries.getDonorDonationsMeta = function() {
   return 'match (donor:Person)-[d:`contributed to`]->(c:Committee) where donor.personId = { personId } with donor, c, sum(d.amount) as donations order by donations return donor, c, donations';
-}
+};
+
+//CAMPAIGN
+
+//get donation summary
+//get campaign people
+queries.getCommitteeEntities = function() {
+  return 'match (c:Committee)-[r]-(e) where c.regNo = {{ regNo }} with c, r, type(r) as rtype, e where rtype <> "contributed to" return c, r, rtype, e';
+};
+
+//get races
+queries.getCommitteeDonationSummary = function() {
+  return 'match (c:Committee)-[r:`contributed to`]-(p:Person) where c.regNo = { regNo } with c, type(r) as rtype, r.in as session, sum(r.amount) as total, count(distinct p) as donors return c, rtype, session, total, donors';
+};
 
 exports.GetHedgers = function (params, cb) {
   queryDb(queries.getHedgers(params), params, cb);
@@ -125,14 +138,22 @@ exports.GetAllDonorsMeta = function (params, cb) {
   queryDb(queries.getAllDonorsMeta(params), params, cb);
 };
 
-exports.GetAvailableRaces = function(cb) {
+exports.GetAvailableRaces = function(params, cb) {
   queryDb(queries.getAvailableRaces(), {}, cb);
-}
+};
 
 exports.GetDonorDonations = function(params, cb) {
   queryDb(queries.getDonorDonations(), params, cb);
-}
+};
 
 exports.GetDonorDonationsMeta = function(params, cb) {
   queryDb(queries.getDonorDonationsMeta(), params, cb);
-}
+};
+
+exports.GetCommitteeEntities = function(params, cb) {
+  queryDb(queries.getCommitteeEntities(), params, cb);
+};
+
+exports.GetCommitteeDonationSummary = function(params, cb) {
+  queryDb(queries.getCommitteeDonationSummary(), params, cb);
+};

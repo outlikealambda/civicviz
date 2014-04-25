@@ -11,56 +11,22 @@ angular.module('wm.d3', ['btford.socket-io'])
     records.columns = results.columns;
   };
 
-  load.availableRaces = {
-    request: API.availableRaces.requestRecords
-  }
-
-  load.allDonors = {
-    request: function(params) {
-      return API.allDonors.requestRecords(params).then(setData);
-    }
-  };
-
-  load.allDonorsMeta = {
-    request: function(params) {
-      return API.allDonorsMeta.requestRecords(params);
-    }
-  };
-
-  load.donorDonations = {
-    request: function(params) {
-      return API.donorDonations.requestRecords(params);
-    }
-  };
-  load.donorDonationsMeta = {
-    request: function(params) {
-      return API.donorDonationsMeta.requestRecords(params);
-    }
-  };
-
-  load.hedgers = {
-    request: function(params) {
-      return API.hedgers.requestRecords(params).then(setData);
-    }
-  };
-  load.hedgersMeta = {
-    request: function(params) {
-      return API.hedgersMeta.requestRecords(params);
-    }
-  };
-
   return {
-    load: load,
+    load: API,
     records: records
   };
 }])
 .factory('API', [ '$q', 'Socket', function($q, Socket) {
+  var
+    meta,
+    race,
+    donor;
 
   var emptyCallback = function emptyCallbackFn() {
     console.log("no callback has been set for this socket call");
-  }
+  };
 
-  function createSocketCall(queryId, processParams) {
+  function createSocketCall(queryDescription, processParams) {
     var
       deferred,
       // functions
@@ -72,44 +38,44 @@ angular.module('wm.d3', ['btford.socket-io'])
       };
     }
 
-    requestRecords = function(parameters) {
+    //set up receive records
+    Socket.on(queryDescription + ':data', function(results) {
+      deferred.resolve(results);
+    });
+
+    return function requestRecordsFromServerFn(parameters) {
       if (!parameters) {
         parameters = {};
       }
 
-      Socket.emit('query:' + queryId, processParams(parameters));
+      Socket.emit(queryDescription + ':query', processParams(parameters));
 
       deferred = $q.defer();
       return deferred.promise;
     };
-
-    //set up receive records
-    Socket.on('data:' + queryId, function(results) {
-      deferred.resolve(results);
-    });
-
-    return {
-      requestRecords: requestRecords
-    };
   }
 
-  var allDonorsQuery = createSocketCall('allDonors');
-  var allDonorsMetaQuery = createSocketCall('allDonorsMeta');
-  var availableRacesQuery = createSocketCall('availableRaces');
-  var donorDonationsQuery = createSocketCall('donorDonations');
-  var donorDonationsMetaQuery = createSocketCall('donorDonationsMeta');
-  var hedgersQuery = createSocketCall('hedgers');
-  var hedgersMetaQuery = createSocketCall('hedgersMeta');
+  meta = {
+    availableRaces: createSocketCall('meta:availableRaces')
+  };
+
+  race = {
+    allDonors: createSocketCall('race:allDonors'),
+    allDonorsMeta: createSocketCall('race:allDonorsMeta'),
+    hedgers: createSocketCall('race:hedgers'),
+    hedgersMeta: createSocketCall('race:hedgersMeta')
+  };
+
+  donor = {
+    donations: createSocketCall('donor:donations'),
+    donationsMeta: createSocketCall('donor:donationsMeta')
+  };
 
   return {
-    availableRaces: availableRacesQuery,
-    allDonors: allDonorsQuery,
-    allDonorsMeta: allDonorsMetaQuery,
-    donorDonations: donorDonationsQuery,
-    donorDonationsMeta: donorDonationsMetaQuery,
-    hedgers: hedgersQuery,
-    hedgersMeta: hedgersMetaQuery
-  }
+    meta: meta,
+    donor: donor,
+    race: race
+  };
 }])
 .constant('COLORS', {
   blues: [
@@ -143,8 +109,10 @@ angular.module('wm.d3', ['btford.socket-io'])
     NONE_AVAILABLE = "N/A",
     ar = [];
 
-  Viz.load.availableRaces.request().then(function(results) {
-    ar = results.data
+  // Viz.load.availableRaces.request().then(function(results) {
+    console.log(Viz);
+  Viz.load.meta.availableRaces().then(function(results) {
+    ar = results.data;
     $scope.title = "";
   });
 
@@ -182,7 +150,7 @@ angular.module('wm.d3', ['btford.socket-io'])
       return [];
     }
 
-    for ( i = 0; i < ar.length; i++ ) {
+    for (i = 0; i < ar.length; i++) {
       currentOffice = ar[i][0];
 
       if (params && !matchOffice(currentOffice, params)) {

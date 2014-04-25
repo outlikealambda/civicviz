@@ -23,6 +23,7 @@ block body
             select.form-control(ng-model='period', ng-options='possiblePeriod for possiblePeriod in periods')
         li.form-group
           button.viz-button.btn.btn-default(type="button", ng-click='setParams(title, county, district, period)') Get Data
+          button.btn.btn-default(type="button", ng-click='testAdd()') +Ring
     div(donut-builder, on-submit='setParams')
 
   script(src='components/d3/d3.js')

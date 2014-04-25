@@ -4,6 +4,7 @@ angular.module('wm.donut', ['wm.d3'])
     // constants
     MIN_HEIGHT = 500,
     MIN_WIDTH = 500,
+    STD_RADIUS = 200,
     // functions
     colorize,
     getAllRaceDonations,
@@ -30,14 +31,15 @@ angular.module('wm.donut', ['wm.d3'])
       }
 
       return used[party][regNo];
-    }
+    };
 
     function assignColor(party, regNo) {
       if (!used[party]) {
         used[party] = {};
       }
 
-      return used[party][regNo] = nextColor(party);
+      used[party][regNo] = nextColor(party);
+      return used[party][regNo];
     }
 
     nextColor = function() {
@@ -87,7 +89,6 @@ angular.module('wm.donut', ['wm.d3'])
     }
 
     return donations;
-
   };
 
   sort = function() {
@@ -102,21 +103,194 @@ angular.module('wm.donut', ['wm.d3'])
       }
 
       return a[0].lastName < b[0].lastName ? -1 : a[0].lastName > b[0].lastName ? 1 : 0;
-    }
+    };
 
     return {
       byCommittee: byCommittee
     };
   }();
 
+  var go = {};
+
+  go.allDonors = {
+    isActive: false,
+    go: function(index, bbox) {
+      var params = {
+        title: "Mayor",
+        county: "Maui",
+        period: "2010-2012"
+      };
+
+      Viz.load.race.allDonors(params).then(function(results) {
+        var donut = createDonut(bbox, null, null);
+
+        donut.update(0, results.data);
+
+
+        donutStacker.popStackAndAddNew(donut, index);
+      });
+    }
+  };
+
+  go.hedgers = {
+    isActive: false,
+    go: function() {
+      // clearInnerArc();
+      // if (!scope.hedgers.isActive) {
+      //   Viz.load.hedgers.request(params).then(function() {
+      //     populateOuterArc(Viz.records.data);
+      //   });
+      //   Viz.load.hedgersMeta.request(params).then(function(results) {
+      //     var i,
+      //       committee;
+
+      //     scope.meta = results;
+      //     for ( i = 0; i < scope.meta.data.length; i++ ) {
+      //       committee = scope.meta.data[i][0];
+      //       committee.color = colorize(committee.party, committee.regNo);
+      //     }
+      //   });
+      //   scope.hedgers.isActive = true;
+      //   scope.allDonors.isActive = false;
+      // }
+    }
+  };
+  function createDonut(donutParent, wedgeValueFn, wedgeSortFn) {
+    // STATE:
+    // index
+    // data
+    var 
+      donutData,
+      donutIndex,
+      group,
+      pie,
+      //function
+      updateDonut,
+      clearDonut;
+
+    wedgeValueFn = wedgeValueFn || function() { return 1; };
+    wedgeSortFn = wedgeSortFn || null;
+
+    donutData = [];
+    donutIndex = 0;
+    group = donutParent.append("g");
+
+    pie = d3.layout.pie()
+      .sort(wedgeSortFn)
+      .value(wedgeValueFn);
+
+    updateDonut = function updateDonutFn(index, data, wedgeSortFn, wedgeValueFn) {
+      var
+        GEOMETRIC_BASE = 0.8,
+        arcs,
+        arcGenerator,
+        widthModifier;
+
+      if (index) {
+        donutIndex = index;
+      }
+
+      if (data) {
+        // console.log(data);
+        donutData = data;
+      }
+
+      if (typeof wedgeSortFn === 'function') {
+        pie.sort(wedgeSortFn);
+      }
+
+      if (typeof wedgeValueFn === 'function') {
+        pie.value(wedgeValueFn);
+      }
+
+      widthModifier = Math.pow(GEOMETRIC_BASE, donutIndex);
+
+      // used to create the arc for each path
+      arcGenerator = d3.svg.arc()
+        .outerRadius(STD_RADIUS + 100*(1 - widthModifier)/(1 - GEOMETRIC_BASE))
+        .innerRadius(STD_RADIUS + 100*(1 - widthModifier)/(1 - GEOMETRIC_BASE) - 90*widthModifier);
+
+      // returns the actionable data selection
+      arcs = group.selectAll(".arc")
+        .data(pie(donutData));
+
+      // add path DOM elements for any new data 
+      arcs.enter()
+        .append("path")
+        .attr("class", "arc")
+        .attr("d", d3.svg.arc().outerRadius(10).innerRadius(1))
+        .style("fill", function(d) { 
+          return donutIndex * 111111 + '';
+        })
+        .on('click', function() {
+          go.allDonors.go(donutIndex, donutParent);
+        });
+
+      // for any updated elements, redraw the arc
+      arcs.transition().duration(1000)
+        .attr("d", arcGenerator);
+
+      // remove dropped elements
+      arcs.exit().remove();
+
+      console.log(arcs);
+    };
+
+    clearDonut = function clearDonutFn() {
+      console.log("pre-clear",group.selectAll(".arc"));
+      group.selectAll(".arc").data([]).exit()
+        .transition().duration(800)
+        .attr("d", d3.svg.arc().outerRadius(0).innerRadius(0))
+        .remove();
+    };
+
+    return {
+      clear: clearDonut,
+      update: updateDonut
+    };
+  }
+
+  var donutStacker = function() {
+    var donutStack = []; // array of active donuts
+
+    /**
+     *
+     */    
+    function addToStackAtIndex(donut, index) {
+      donutStack.splice(index, 0, donut);
+    }
+
+    function popStack(index) {
+      var i;
+
+      removedDonuts = donutStack.splice(0, index);
+
+      for (i = 0; i < removedDonuts.length; i++) {
+        removedDonuts[i].clear();
+      }
+    }
+
+    function updateStack() {
+      var i;
+
+      for (i = 0; i < donutStack.length; i++)  {
+        donutStack[i].update(i);
+      }
+    }
+
+    return {
+      popStackAndAddNew: function popStackAndAddNewFn(donut, index) {
+        popStack(index);
+        addToStackAtIndex(donut, 0);
+        updateStack();
+      }
+    };
+  }();
   
   return {
     templateUrl: 'partials/donut',
     link: function(scope, elem, attrs) {
       var
-        arc,
-        pie,
-        innerPie,
         svg,
         bbox,
         params,
@@ -132,7 +306,7 @@ angular.module('wm.donut', ['wm.d3'])
 
           }
         }
-      ]
+      ];
       activeZoom = {
         translate : [0, 0],
         scale : 1
@@ -152,22 +326,6 @@ angular.module('wm.donut', ['wm.d3'])
         var bounds = sizeSvg(),
           radius = Math.min(bounds.width, bounds.height) / 2 - 20;
 
-        arc = d3.svg.arc()
-          .outerRadius(radius - 10)
-          .innerRadius(radius - 90);
-
-        innerArc = d3.svg.arc()
-          .outerRadius(radius - 110)
-          .innerRadius(radius - 200);
-
-        pie = d3.layout.pie()
-          .sort(sort.byCommittee)
-          .value(function(d) { return d[3]; });
-
-        innerPie = d3.layout.pie()
-          .sort(null)
-          .value(function(d) { return d[2].amount; })
-
         zoom = d3.behavior.zoom().on( "zoom", panZoom );
 
         svg = d3.select(elem[0]).append("svg:svg")
@@ -177,148 +335,13 @@ angular.module('wm.donut', ['wm.d3'])
           .attr("preserveAspectRatio", "xMidYMid")
           .call( zoom );    
 
-        bbox = svg.append("g");
-      }
-
-      function populateOuterArc(data) {
-        var gArcs;
-
-        // bbox.selectAll(".arc").data([]).exit().remove();
-
-        gArcs = bbox.selectAll(".arc")
-          .data(pie(data));
-
-        gArcs.enter()
-          .append("path")
-          .attr("class", "arc")
-          .on("mouseover", function(d) {
-            scope.$apply(scope.details = getAllRaceDonations(d.data));
-          })
-          .on("mouseleave", function() {
-            scope.$apply(scope.details = null);
-          })
-          .on("click", function(d) {
-            getIndividualDonations(d.data[0].personId);
-          });
-
-        gArcs
-          .style("fill", function(d) { 
-            return colorize(d.data[1].party, d.data[1].regNo); 
-          })
-          .transition().duration(1000)
-          .attr("d", arc);
-
-        gArcs.exit().remove();
-      }
-
-      function getIndividualDonations(id) {
-        var params = {
-          personId: id
-        };
-
-        clearInnerArc();
-
-        Viz.load.donorDonations.request(params).then(function(results) {
-          populateInnerArc(results.data);
-        });
-
-        Viz.load.donorDonationsMeta.request(params).then(function(results) {
-          var i,
-            donationTotal = 0,
-            committee;
-
-          scope.donationMeta = results.data;
-          for ( i = 0; i < scope.donationMeta.length; i++ ) {
-            committee = scope.donationMeta[i][1];
-            committee.color = colorize(committee.party, committee.regNo);
-            donationTotal += scope.donationMeta[i][2];
-          }
-
-          scope.donationTotal = donationTotal;
-        });
-      }
-
-      function populateInnerArc(data) {
-        var gArcs;
-
-
-        gArcs = bbox.selectAll(".inner-arc")
-          .data(innerPie(data));
-
-        gArcs.enter()
-          .append("path")
-          .attr("class", "inner-arc")
-          // on something
-          .on("mouseover", function(d) {
-            scope.$apply(scope.donation = d.data);
-          })
-          .on("mouseleave", function() {
-            scope.$apply(scope.donation = null);
-          });
-
-        gArcs.style("fill", function(d) {
-            return colorize(d.data[1].party, d.data[1].regNo); 
-          })
-          .transition().duration(1000)
-          .attr("d", innerArc)
-      }
-
-      function clearInnerArc() {
-        bbox.selectAll(".inner-arc").data([]).exit().remove();
-
-        scope.donationMeta = null;
-        scope.donationTotal = null;
+        bbox = svg.append("g").attr("class", "bbox");
       }
 
       // viz switching
-      scope.allDonors = {
-        isActive: false,
-        go: function() {
-          clearInnerArc();
-          console.log(params);
-          if (!scope.allDonors.isActive) {
-            Viz.load.allDonors.request(params).then(function() {
-              populateOuterArc(Viz.records.data);
-            });
-            Viz.load.allDonorsMeta.request(params).then(function(results) {
-              var i,
-                committee;
+      scope.allDonors = go.allDonors;
 
-              scope.meta = results;
-              for ( i = 0; i < scope.meta.data.length; i++ ) {
-                committee = scope.meta.data[i][0];
-                committee.color = colorize(committee.party, committee.regNo);
-              }
-            });
-            scope.allDonors.isActive = true;
-            scope.hedgers.isActive = false;
-          }
-        }
-      };
-
-      scope.hedgers = {
-        isActive: false,
-        go: function() {
-          clearInnerArc();
-          if (!scope.hedgers.isActive) {
-            Viz.load.hedgers.request(params).then(function() {
-              populateOuterArc(Viz.records.data);
-            });
-            Viz.load.hedgersMeta.request(params).then(function(results) {
-              var i,
-                committee;
-
-              scope.meta = results;
-              for ( i = 0; i < scope.meta.data.length; i++ ) {
-                committee = scope.meta.data[i][0];
-                committee.color = colorize(committee.party, committee.regNo);
-              }
-            });
-            scope.hedgers.isActive = true;
-            scope.allDonors.isActive = false;
-          }
-        }
-      };
+      scope.hedgers = go.hedgers;
 
       scope.clearInnerArc = function() {
         clearInnerArc();
@@ -339,18 +362,21 @@ angular.module('wm.donut', ['wm.d3'])
           scope.hedgers.isActive = false;
           scope.hedgers.go();
         }
-      }
+      };
 
       //finally, go
       init();
 
       params = {
         title: "Mayor",
-        county: "Honolulu",
+        county: "Maui",
         period: "2010-2012"
       };
+      scope.testAdd = function() {
+        go.allDonors.go(0, bbox);
+      };
 
-      scope.allDonors.go();
+      scope.testAdd();
     }
   };
 }]);

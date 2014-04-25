@@ -140,3 +140,22 @@ return donor, c, donations
 match (donor:Person)-[d:`contributed to`]->(c:Committee) where donor.personId = 3683 with donor, c, sum(d.amount) as donation order by donation return donor, c, donation// get individual donations for a person, grouped by candidate
 
 match (donor:Person)-[d:`contributed to`]->(c:Committee) where donor.personId = 3683 return donor, c, d 
+
+// get all people associated with a campaign who are NOT donors
+match 
+  (c:Committee)-[r]-(e)
+where 
+  c.regNo = "CC10529"
+with c, r, type(r) as rtype, e
+where 
+  rtype <> "contributed to"
+return c, r, rtype, e
+
+
+// get a summary of donations to a campaign, by year
+match 
+  (c:Committee)-[r:`contributed to`]-(p:Person) 
+where 
+  c.regNo = "CC10529" 
+with c, type(r) as rtype, r.in as session, sum(r.amount) as total, count(distinct p) as donors 
+return c, rtype, session, total, donors
